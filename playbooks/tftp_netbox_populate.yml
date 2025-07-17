@@ -1,0 +1,22 @@
+---
+- name: Load TFTP server with Netbox data
+  hosts: tftp
+  gather_facts: false
+  become: true
+
+  vars:
+    ssh_username: 
+    ssh_pubkey_hash: 
+
+  tasks:
+    - name: Get management interfaces
+      ansible.builtin.set_fact:
+        _interfaces: "{{ query('netbox.netbox.nb_lookup', 'interfaces', api_filter='mgmt_only=true' ) }}"
+
+    - name: Add device specific config files
+      vars:
+        _ip: "{{ query('netbox.netbox.nb_lookup', 'ip-addresses', api_filter='assigned_object_id=' + item.key | string ) }}"
+      ansible.builtin.template:
+        src: device-confg.j2
+        dest: /var/lib/tftpboot/{{ item.value.device.name }}-confg
+      loop: "{{ _interfaces }}"

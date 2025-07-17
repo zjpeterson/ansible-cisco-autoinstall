@@ -1,0 +1,13 @@
+[Unit]
+Description=Watches TFTP logs and sends webhook on config download
+After=network.target tftp.service
+
+[Service]
+ExecStart=/usr/local/bin/tftpwatch.sh
+Restart=always
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

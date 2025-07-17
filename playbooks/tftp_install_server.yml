@@ -1,0 +1,28 @@
+---
+- name: Install TFTP server
+  hosts: tftp
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Ensure TFTP server is present
+      ansible.builtin.dnf:
+        name: tftp-server
+        state: present
+
+    - name: Enable TFTP server
+      ansible.builtin.service:
+        name: tftp.socket
+        state: started
+        enabled: true
+
+    - name: Get service facts
+      ansible.builtin.service_facts:
+
+    - name: Ensure firewall is open for TFTP
+      ansible.posix.firewalld:
+        service: tftp
+        permanent: true
+        state: enabled
+        immediate: true
+      when: "'firewalld.service' in services"

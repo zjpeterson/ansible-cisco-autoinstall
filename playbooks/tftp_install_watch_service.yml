@@ -1,0 +1,33 @@
+---
+- name: Install TFTP watch service
+  hosts: tftp
+  gather_facts: false
+  become: true
+
+  vars:
+    eda_webhook:
+    eda_user: 
+    eda_password: 
+
+  tasks:
+    - name: Create script
+      ansible.builtin.template:
+        src: tftpwatch.sh.j2
+        dest: /usr/local/bin/tftpwatch.sh
+        mode: '0755'
+    
+    - name: Create systemd service
+      ansible.builtin.copy:
+        src: tftpwatch.service
+        dest: /etc/systemd/system/tftpwatch.service
+        mode: '0644'
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Enable and start tftp-watcher
+      ansible.builtin.systemd:
+        name: tftpwatch.service
+        enabled: true
+        state: started

@@ -1,0 +1,10 @@
+username {{ ssh_username }} privilege 15
+ip ssh pubkey-chain
+ username {{ ssh_username }}
+  key-hash ssh-rsa {{ ssh_pubkey_hash }}
+  exit
+ exit
+line vty 0 4
+ login local
+interface {{ item.value.name }}
+  ip address {{ _ip.0.value.address | ansible.utils.ipaddr('address') }} {{ _ip.0.value.address | ansible.utils.ipaddr('netmask') }}
