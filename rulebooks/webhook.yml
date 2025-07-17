@@ -9,8 +9,7 @@
 
   rules:
     - name: Fire on events from supported OS
-      condition:
-        - event.payload.os == 'ios'
+      condition: event.payload.os == "ios"
       action:
         run_job_template:
           name: Standard network configuration
