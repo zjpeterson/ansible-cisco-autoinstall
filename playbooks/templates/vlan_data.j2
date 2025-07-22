@@ -1,0 +1,18 @@
+{% set ns = namespace(vlan_data=[]) %}
+{% for interface in interfaces %}
+  {% if interface.untagged_vlan %}
+    {% set new_vlan = {"name": interface.untagged_vlan.name, "vlan_id": interface.untagged_vlan.vid} %}
+    {% if new_vlan not in ns.vlan_data %}
+      {% set ns.vlan_data = ns.vlan_data + [new_vlan] %}
+    {% endif %}
+  {% endif %}
+  {% if interface.tagged_vlans | length > 0 %}
+    {% for tagged_vlan in interface.tagged_vlans %}
+      {% set new_vlan = {"name": tagged_vlan.name, "vlan_id": tagged_vlan.vid} %}
+      {% if new_vlan not in ns.vlan_data %}
+        {% set ns.vlan_data = ns.vlan_data + [new_vlan] %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+{{ ns.vlan_data }}

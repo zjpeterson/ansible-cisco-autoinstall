@@ -1,0 +1,16 @@
+{% set ns = namespace(intf_data=[]) %}
+{% for interface in interfaces %}
+  {% if interface.mode and interface.mode.value == 'access' %}
+    {% set new_intf = {"name": interface.name, "access": {"vlan": interface.untagged_vlan.vid}} %}
+    {% if new_intf not in ns.intf_data %}
+      {% set ns.intf_data = ns.intf_data + [new_intf] %}
+    {% endif %}
+  {% endif %}
+  {% if interface.mode and interface.mode.value == 'tagged' %}
+  {% set new_intf = {"name": interface.name, "trunk": {"allowed_vlans": interface.tagged_vlans | map(attribute='vid') | join(',') }} %}
+    {% if new_intf not in ns.intf_data %}
+      {% set ns.intf_data = ns.intf_data + [new_intf] %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{{ ns.intf_data }}
