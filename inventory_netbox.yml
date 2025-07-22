@@ -3,4 +3,5 @@ plugin: netbox.netbox.nb_inventory
 group_by:
   - device_roles
   - device_types
+  - tags
 interfaces: true
