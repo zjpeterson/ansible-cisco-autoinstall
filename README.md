@@ -17,9 +17,8 @@ This implementation uses [Netbox](https://netboxlabs.com/) to store device data,
 
 ## Requirements
 1. Device information is loaded into Netbox. For the playbooks in this repo, each device should have an interface that's designated "management-only" with an IP address assigned to it.
-2. Device information is loaded in DHCP. A static reservation is required for the MAC address of the management port, or if the device doesn't have a management port, the Vlan1 virtual interface. The DHCP server should provide Option 67 with the IP of a server that will run TFTP.
-3. Device information is loaded into DNS. The device will try to reverse lookup the IP that it gets from DHCP.
-4. Automation Controller has a Job Template available that runs a full configuration of this type of device. It ideally uses Netbox dynamic inventory.
+2. Device information is loaded in DHCP. A static reservation is required for the MAC address of the management port, or if the device doesn't have a management port, the Vlan1 virtual interface. The DHCP server should provide Option 66 with the IP of a server that will run TFTP and Option 12 with the name of the device.
+3. Automation Controller has a Job Template available that runs a full configuration of this type of device. It ideally uses Netbox dynamic inventory.
 
 ## Setup
 
