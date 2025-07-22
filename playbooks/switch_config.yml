@@ -1,0 +1,19 @@
+---
+- name: Configure switches
+  hosts: device_roles_access
+  gather_facts: false
+
+  tasks:
+    - name: Configure VLANs
+      vars:
+        _vlan_data: "{{ lookup('template', 'vlan_data.j2') | trim }}"
+      cisco.ios.ios_vlans:
+        state: merged
+        config: "{{ _vlan_data }}"
+
+    - name: Configure L2 interfaces
+      vars:
+        _l2_interface_data: "{{ lookup('template', 'l2_interface_data.j2') | trim }}"
+      cisco.ios.ios_l2_interfaces:
+        state: merged
+        config: "{{ _l2_interface_data }}"
