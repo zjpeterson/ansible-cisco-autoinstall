@@ -8,3 +8,4 @@ line vty 0 4
  login local
 interface {{ item.value.name }}
   ip address {{ _ip.0.value.address | ansible.utils.ipaddr('address') }} {{ _ip.0.value.address | ansible.utils.ipaddr('netmask') }}
+  exit
