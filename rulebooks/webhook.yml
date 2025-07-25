@@ -13,6 +13,6 @@
       action:
         run_job_template:
           name: Standard network configuration
-          organization: Default
+          organization: Network
           job_args:
             limit: "{{ event.payload.host }}"
