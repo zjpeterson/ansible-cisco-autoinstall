@@ -4,12 +4,23 @@ eda_webhook="{{ eda_webhook }}"
 eda_user="{{ eda_user }}"
 eda_password="{{ eda_password }}"
 
+declare -A seen_hosts
+cache_ttl=5  # seconds to wait before allowing another curl for the same host
+
 journalctl -fu tftp.service --since now | while read -r line; do
     if [[ "$line" =~ finished[[:space:]]+([a-zA-Z0-9._-]+)-confg ]]; then
         host="${BASH_REMATCH[1]}"
+        now=$(date +%s)
+
+        # If host was seen recently, skip
+        if [[ -n "${seen_hosts[$host]}" ]] && (( now - seen_hosts[$host] < cache_ttl )); then
+            continue
+        fi
+
+        seen_hosts[$host]=$now
         echo "Detected TFTP config fetch for: $host"
 
-        curl -s -k -X POST ${eda_webhook} \
+        curl -s -k -X POST "${eda_webhook}" \
             -u "${eda_user}:${eda_password}" \
             -H "Content-Type: application/json" \
             -d "{\"os\": \"ios\", \"host\": \"${host}\"}" &
